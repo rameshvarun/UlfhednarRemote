@@ -13,12 +13,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by Varun on 6/10/2015.
  */
 public class NetworkManager implements Runnable {
-    public static String TAG = "NetworkManager";
-    public static int TICK = 500;
+    private static final String TAG = "NetworkManager";
+    private static final int TICK = 500;
 
-    public AtomicBoolean running = new AtomicBoolean(true);
-    public final RemoteState state;
-    public final ServerInfo server;
+    private AtomicBoolean running = new AtomicBoolean(true);
+    private final RemoteState state;
+    private final ServerInfo server;
 
     public NetworkManager(RemoteState state, ServerInfo server) {
         this.state = state;
@@ -36,9 +36,8 @@ public class NetworkManager implements Runnable {
                     catch (InterruptedException e) { }
                 }
 
-                Log.v(TAG, "Sending remote state update packet...");
                 byte[] message = state.toString().getBytes();
-                DatagramPacket packet = new DatagramPacket(message, message.length, server.address, server.port);
+                DatagramPacket packet = new DatagramPacket(message, message.length, server.getAddress(), server.getPort());
                 socket.send(packet);
             }
 
@@ -48,5 +47,9 @@ public class NetworkManager implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void stop() {
+        running.set(false);
     }
 }

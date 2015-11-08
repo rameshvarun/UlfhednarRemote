@@ -21,6 +21,7 @@ import java.util.Random;
 public class RemoteActivity extends Activity {
     public static String TAG = "RemoteActivity";
     private RemoteState state = new RemoteState();
+
     private NetworkManager netManager;
 
     public void pushUpdate() {
@@ -49,9 +50,6 @@ public class RemoteActivity extends Activity {
             e.commit();
         }
         Log.d(TAG, "Remote id: " + state.getId());
-
-        netManager = new NetworkManager(state, (ServerInfo)getIntent().getSerializableExtra("server"));
-        new Thread(netManager).start();
 
         final View attackView = findViewById(R.id.attack);
         final Rect attackRect = new Rect();
@@ -137,6 +135,19 @@ public class RemoteActivity extends Activity {
                 return true;
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        netManager = new NetworkManager(state, (ServerInfo)getIntent().getSerializableExtra("server"));
+        new Thread(netManager).start();
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        netManager.stop();
+        super.onPause();
     }
 
     @Override

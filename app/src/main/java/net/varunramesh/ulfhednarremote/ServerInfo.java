@@ -9,13 +9,19 @@ import java.net.InetAddress;
  * Created by Varun on 6/10/2015.
  */
 public final class ServerInfo implements Serializable {
-    public final int port;
-    public final InetAddress address;
+    private final int port;
+    private final InetAddress address;
+    private final String hostname;
 
     public ServerInfo(InetAddress address, int port) {
         this.port = port;
         this.address = address;
+        this.hostname = address.getHostName();
     }
+
+    public String getHostname() { return hostname; }
+    public int getPort() { return port; }
+    public InetAddress getAddress() { return address; }
 
     @Override
     public boolean equals(Object o) {
